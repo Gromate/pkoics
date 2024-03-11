@@ -1,5 +1,6 @@
 from icalendar import Calendar, Event
 from datetime import datetime
+from configparser import ConfigParser
 import requests
 import json 
 import os
@@ -35,13 +36,17 @@ class Schedule:
         self.cal.add_component(event)
 
     def get_schedule_from_api(self):
+        config = ConfigParser()
+
+        config.read('./config.ini')
+
         base_url = 'https://schedulescraperpw.azurewebsites.net/api/schedule?'
         url = ''.join([
             base_url,
-            f'TeamName={self.team_name}',
-            f'&LabGropName=L01',
-            f'&ProjGroupName=P01',
-            f'&CompLabGroupName=K01',
+            f'TeamName={config.get("groups", "team_name")}',
+            f'&LabGropName={config.get("groups", "lab_group_name")}',
+            f'&ProjGroupName={config.get("groups", "project_group_name")}',
+            f'&CompLabGroupName={config.get("groups", "computer_lab_group_name")}',
             f'&WeekType=P'
         ])
 

@@ -19,6 +19,7 @@ class Schedule:
         self.cal = cal
 
     def save_calendar_to_file(self, path='./', filename='example.ics'):
+        print(f'Saving calendar to {path+filename}')
         f = open(os.path.join(path, filename), 'wb')
         f.write(self.cal.to_ical())
         f.close()

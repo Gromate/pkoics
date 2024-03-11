@@ -21,9 +21,9 @@ class Schedule:
 
     def save_calendar_to_file(self, path='./', filename='example.ics'):
         print(f'Saving calendar to {path+filename}')
-        f = open(os.path.join(path, filename), 'wb')
-        f.write(self.cal.to_ical())
-        f.close()
+        file = open(os.path.join(path, filename), 'wb')
+        file.write(self.cal.to_ical())
+        file.close()
 
     def add_lesson(self):
         event = Event()

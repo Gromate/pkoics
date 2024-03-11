@@ -27,10 +27,21 @@ class Schedule:
 
     def add_lesson(self):
         event = Event()
-        event.add('summary', 'Spotkanie 2')
-        event.add('dtstart', datetime(2024, 3, 15, 10, 0, 0, tzinfo=pytz.utc))
-        event.add('dtend', datetime(2024, 3, 15, 12, 0, 0, tzinfo=pytz.utc))
-        event.add('dtstamp', datetime(2024, 3, 15, 0, 10, 0, tzinfo=pytz.utc))
+        lesson_number = 3
+        event.add('summary', self.schedule_json[lesson_number]['name'])
+
+        description = self.schedule_json[lesson_number]['eventType']
+        location = self.schedule_json[lesson_number]['location']
+        time_range = self.schedule_json[lesson_number]['timeRange']
+
+        start_time, end_time = time_range.split('-')
+        start_time = start_time.split(':')
+        end_time = end_time.split(':')
+
+        event.add('dtstart', datetime(2024, 3, 15, (int)(start_time[0]), (int)(start_time[1]), 0, tzinfo=pytz.utc))
+        event.add('dtend', datetime(2024, 3, 15, (int)(end_time[0]), (int)(end_time[1]), 0, tzinfo=pytz.utc))
+        event.add('location', location)
+        event.add('description', description)
         event.add('RRULE', {'FREQ': 'WEEKLY', 'INTERVAL': 2, 'COUNT': 3})
 
         self.cal.add_component(event)
@@ -54,7 +65,7 @@ class Schedule:
         parsed_json = json.loads(api_response.text)
         self.__check_status_code(api_response)
 
-        print(parsed_json[0]['name'])
+        self.schedule_json = parsed_json
 
     def __check_status_code(self, api_response):
         if api_response.status_code == 200:

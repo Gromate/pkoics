@@ -12,6 +12,7 @@ event.add('summary', 'Spotkanie 1')
 event.add('dtstart', datetime(2024, 3, 15, 10, 0, 0, tzinfo=pytz.utc))
 event.add('dtend', datetime(2024, 3, 15, 12, 0, 0, tzinfo=pytz.utc))
 event.add('dtstamp', datetime(2024, 3, 15, 0, 10, 0, tzinfo=pytz.utc))
+event.add('RRULE', {'FREQ': 'WEEKLY', 'INTERVAL': 2, 'COUNT': 3})
 
 cal.add_component(event)
 

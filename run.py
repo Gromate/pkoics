@@ -1,6 +1,7 @@
 from icalendar import Calendar, Event
 from datetime import datetime
-import tempfile, os
+from schedule.schedule import Schedule
+import os
 import requests
 import json 
 import pytz
@@ -14,24 +15,16 @@ parsed_json = json.loads(api_response.text)
 
 print(parsed_json[0]['name'])
 
-cal = Calendar()
-cal.add('prodid', 'MyCal')
-cal.add('version', '2.0')
+schedule = Schedule('13K1')
+schedule.init_calendar()
 
 event = Event()
-event.add('summary', 'Spotkanie 1')
+event.add('summary', 'Spotkanie 2')
 event.add('dtstart', datetime(2024, 3, 15, 10, 0, 0, tzinfo=pytz.utc))
 event.add('dtend', datetime(2024, 3, 15, 12, 0, 0, tzinfo=pytz.utc))
 event.add('dtstamp', datetime(2024, 3, 15, 0, 10, 0, tzinfo=pytz.utc))
 event.add('RRULE', {'FREQ': 'WEEKLY', 'INTERVAL': 2, 'COUNT': 3})
 
-cal.add_component(event)
+schedule.cal.add_component(event)
 
-path = r"./"
-filename = r"example.ics"
-
-f = open(os.path.join(path, filename), 'wb')
-f.write(cal.to_ical())
-f.close()
-
-
+schedule.save_calendar_to_file()

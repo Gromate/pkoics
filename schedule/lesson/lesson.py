@@ -8,7 +8,7 @@ class Lesson(Event):
         self.lesson_json = lesson_json
     
     def add_all(self):
-        self.add_description()
+        #self.add_description()
         self.add_summary()
         self.add_location()
         self.add_recurrence()
@@ -19,7 +19,7 @@ class Lesson(Event):
         self.add('description', description)
 
     def add_summary(self):
-        summary = self.lesson_json['name']
+        summary = self.lesson_json['name'] + '(' + self.lesson_json['eventType'] + ')'
         self.add('summary', summary)
 
     def add_location(self):

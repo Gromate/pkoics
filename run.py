@@ -7,6 +7,6 @@ schedule.init_calendar()
 
 schedule.get_schedule_from_api()
 
-schedule.add_lesson()
+schedule.add_lessons()
 
 schedule.save_calendar_to_file()

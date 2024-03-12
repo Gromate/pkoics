@@ -1,5 +1,5 @@
 from icalendar import Event
-from datetime import time, date, datetime
+from datetime import time, date, datetime, timedelta
 from configparser import ConfigParser
 import pytz
 
@@ -39,20 +39,29 @@ class Lesson(Event):
         time_range = self.lesson_json['timeRange']
         start_time_iso, end_time_iso = time_range.split('-')
 
-        start_time = time().fromisoformat(start_time_iso)
-        end_time = time().fromisoformat(end_time_iso)
+        start_time = time().fromisoformat(start_time_iso.replace(' ', '0'))
+        end_time = time().fromisoformat(end_time_iso.replace(' ', '0'))
 
         config = ConfigParser()
         config.read('./config.ini')
 
-        semester_start_date_iso = config.get('time', 'semester_start_date')
+        semester_start_date_iso = config.get('time', 'semester_start_date').strip()
         semester_start_date = date.fromisoformat(semester_start_date_iso)
+
+        ### day_number from 1-5
+        #1 -> Monday
+        #5 -> Friday
+        day_number = self.lesson_json['dayNr']
+
+        week_modifier = self.__week_type_modifier(self.lesson_json['weekType'])
+        modifier = timedelta(days=day_number+week_modifier-1)
+        lesson_date = semester_start_date + modifier
 
         timezone_name = config.get('time', 'timezone')
         timezone = pytz.timezone(timezone_name)
 
-        self.__add_start_datetime(semester_start_date, start_time, timezone)
-        self.__add_end_datetime(semester_start_date, end_time, timezone)
+        self.__add_start_datetime(lesson_date, start_time, timezone)
+        self.__add_end_datetime(lesson_date, end_time, timezone)
 
     def __add_start_datetime(self, date, time, timezone):
         self.add('dtstart', datetime(
@@ -75,3 +84,20 @@ class Lesson(Event):
             0, 
             tzinfo=timezone
         ))
+
+    def __week_type_modifier(self, week_type):
+        #First week of semester is always odd
+        #If week is even it should start 7 days later
+        if self.__is_week_even(week_type):
+            return 7
+        else:
+            return 0
+
+    def __is_week_even(self, letter):
+        if letter == 'N':
+            return False
+        elif letter == 'P':
+            return True
+        else:
+            return False
+            #raise ValueError('Bad week type identifier')

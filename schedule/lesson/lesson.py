@@ -1,5 +1,6 @@
 from icalendar import Event
-from datetime import datetime
+from datetime import time, date, datetime
+from configparser import ConfigParser
 import pytz
 
 class Lesson(Event):
@@ -23,17 +24,41 @@ class Lesson(Event):
 
     def add_time(self):
         time_range = self.lesson_json['timeRange']
-        start_time, end_time = time_range.split('-')
+        start_time_iso, end_time_iso = time_range.split('-')
 
-        start_time = start_time.split(':')
-        start_time_hours = (int)(start_time[0])
-        start_time_minutes = (int)(start_time[1])
+        start_time = time().fromisoformat(start_time_iso)
+        end_time = time().fromisoformat(end_time_iso)
 
-        end_time = end_time.split(':')
-        end_time_hours = (int)(end_time[0])
-        end_time_minutes = (int)(end_time[1])
+        config = ConfigParser()
+        config.read('./config.ini')
 
-        timezone = pytz.timezone('Europe/Warsaw')
+        semester_start_date_iso = config.get('time', 'semester_start_date')
+        semester_start_date = date.fromisoformat(semester_start_date_iso)
 
-        self.add('dtstart', datetime(2024, 3, 15, start_time_hours, start_time_minutes, 0, tzinfo=timezone))
-        self.add('dtend', datetime(2024, 3, 15, end_time_hours, end_time_minutes, 0, tzinfo=timezone))
+        timezone_name = config.get('time', 'timezone')
+        timezone = pytz.timezone(timezone_name)
+
+        self.add_start_datetime(semester_start_date, start_time, timezone)
+        self.add_end_datetime(semester_start_date, end_time, timezone)
+
+    def add_start_datetime(self, date, time, timezone):
+        self.add('dtstart', datetime(
+            date.year, 
+            date.month, 
+            date.day, 
+            time.hour,
+            time.minute, 
+            0, 
+            tzinfo=timezone
+        ))
+
+    def add_end_datetime(self, date, time, timezone):
+        self.add('dtstart', datetime(
+            date.year, 
+            date.month, 
+            date.day, 
+            time.hour,
+            time.minute, 
+            0, 
+            tzinfo=timezone
+        ))

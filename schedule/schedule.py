@@ -24,10 +24,9 @@ class Schedule:
         file.write(self.cal.to_ical())
         file.close()
 
-    def add_lesson(self):
-        lesson_number = 10
+    def add_lesson(self, lesson_json):
+        lesson = Lesson(lesson_json)
 
-        lesson = Lesson(self.schedule_json[lesson_number])
         lesson.add_description()
         lesson.add_location()
         lesson.add_recurrence()

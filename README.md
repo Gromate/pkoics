@@ -1,6 +1,9 @@
 # Pkoics
 Python program generating icalendar file from schedule of Politechnika Krakowska. Program is using pulling data from API written by [Przemysław Wacek](https://github.com/Przem0s84).
 
+# Requirements
+- Python 3
+  
 # Usage
 ## Clone the repository
 ```bash

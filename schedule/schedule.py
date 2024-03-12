@@ -20,7 +20,15 @@ class Schedule:
 
         self.cal = cal
 
-    def save_calendar_to_file(self, path='./', filename='example.ics'):
+    def save_calendar_to_file(self, path='./output'):
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+        config = ConfigParser()
+        config.read('./config.ini')
+
+        filename = config.get('groups', 'team_name') + '.ics'
+
         print(f'Saving calendar to {path+filename}')
         file = open(os.path.join(path, filename), 'wb')
         file.write(self.cal.to_ical())

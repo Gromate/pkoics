@@ -30,8 +30,8 @@ class Lesson(Event):
         config = ConfigParser()
         config.read('./config.ini')
 
-        semester_end_date = config.get('time', 'semester_end_date')
-        semester_end_date = date.fromisoformat(semester_end_date)
+        semester_end_date_iso = config.get('time', 'semester_end_date')
+        semester_end_date = date.fromisoformat(semester_end_date_iso)
 
         self.add('RRULE', {'FREQ': 'WEEKLY', 'INTERVAL': interval, 'UNTIL': semester_end_date})
 

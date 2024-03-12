@@ -29,7 +29,7 @@ class Schedule:
 
         filename = config.get('groups', 'team_name') + '.ics'
 
-        print(f'Saving calendar to {path+filename}')
+        print(f'Saving calendar to {path+"/"+filename}')
         file = open(os.path.join(path, filename), 'wb')
         file.write(self.cal.to_ical())
         file.close()

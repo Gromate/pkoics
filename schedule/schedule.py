@@ -1,10 +1,9 @@
 from icalendar import Calendar, Event
-from datetime import datetime
 from configparser import ConfigParser
+from schedule.lesson.lesson import Lesson
 import requests
 import json 
 import os
-import pytz
 
 class Schedule:
     def __init__(self, team_name):
@@ -26,25 +25,16 @@ class Schedule:
         file.close()
 
     def add_lesson(self):
-        event = Event()
-        lesson_number = 3
-        event.add('summary', self.schedule_json[lesson_number]['name'])
+        lesson_number = 10
 
-        description = self.schedule_json[lesson_number]['eventType']
-        location = self.schedule_json[lesson_number]['location']
-        time_range = self.schedule_json[lesson_number]['timeRange']
+        lesson = Lesson(self.schedule_json[lesson_number])
+        lesson.add_description()
+        lesson.add_location()
+        lesson.add_recurrence()
+        lesson.add_summary()
+        lesson.add_time()
 
-        start_time, end_time = time_range.split('-')
-        start_time = start_time.split(':')
-        end_time = end_time.split(':')
-
-        event.add('dtstart', datetime(2024, 3, 15, (int)(start_time[0]), (int)(start_time[1]), 0, tzinfo=pytz.utc))
-        event.add('dtend', datetime(2024, 3, 15, (int)(end_time[0]), (int)(end_time[1]), 0, tzinfo=pytz.utc))
-        event.add('location', location)
-        event.add('description', description)
-        event.add('RRULE', {'FREQ': 'WEEKLY', 'INTERVAL': 2, 'COUNT': 3})
-
-        self.cal.add_component(event)
+        self.cal.add_component(Event(lesson))
 
     def get_schedule_from_api(self):
         config = ConfigParser()

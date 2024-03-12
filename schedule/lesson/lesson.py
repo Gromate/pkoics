@@ -26,8 +26,14 @@ class Lesson(Event):
         location = self.lesson_json['location']
         self.add('location', location)
     
-    def add_recurrence(self, interval=2, count=3):
-        self.add('RRULE', {'FREQ': 'WEEKLY', 'INTERVAL': interval, 'COUNT': count})
+    def add_recurrence(self, interval=2):
+        config = ConfigParser()
+        config.read('./config.ini')
+
+        semester_end_date = config.get('time', 'semester_end_date')
+        semester_end_date = date.fromisoformat(semester_end_date)
+
+        self.add('RRULE', {'FREQ': 'WEEKLY', 'INTERVAL': interval, 'UNTIL': semester_end_date})
 
     def add_time(self):
         time_range = self.lesson_json['timeRange']
@@ -60,7 +66,7 @@ class Lesson(Event):
         ))
 
     def __add_end_datetime(self, date, time, timezone):
-        self.add('dtstart', datetime(
+        self.add('dtend', datetime(
             date.year, 
             date.month, 
             date.day, 

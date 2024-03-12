@@ -28,11 +28,7 @@ class Schedule:
         lesson_json = self.schedule_json[10]
         lesson = Lesson(lesson_json)
 
-        lesson.add_description()
-        lesson.add_location()
-        lesson.add_recurrence()
-        lesson.add_summary()
-        lesson.add_time()
+        lesson.add_all()
 
         self.cal.add_component(Event(lesson))
 

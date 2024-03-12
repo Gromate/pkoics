@@ -6,6 +6,13 @@ import pytz
 class Lesson(Event):
     def __init__(self, lesson_json):
         self.lesson_json = lesson_json
+    
+    def add_all(self):
+        self.add_description()
+        self.add_summary()
+        self.add_location()
+        self.add_recurrence()
+        self.add_time()
         
     def add_description(self):
         description = self.lesson_json['eventType']
@@ -38,10 +45,10 @@ class Lesson(Event):
         timezone_name = config.get('time', 'timezone')
         timezone = pytz.timezone(timezone_name)
 
-        self.add_start_datetime(semester_start_date, start_time, timezone)
-        self.add_end_datetime(semester_start_date, end_time, timezone)
+        self.__add_start_datetime(semester_start_date, start_time, timezone)
+        self.__add_end_datetime(semester_start_date, end_time, timezone)
 
-    def add_start_datetime(self, date, time, timezone):
+    def __add_start_datetime(self, date, time, timezone):
         self.add('dtstart', datetime(
             date.year, 
             date.month, 
@@ -52,7 +59,7 @@ class Lesson(Event):
             tzinfo=timezone
         ))
 
-    def add_end_datetime(self, date, time, timezone):
+    def __add_end_datetime(self, date, time, timezone):
         self.add('dtstart', datetime(
             date.year, 
             date.month, 

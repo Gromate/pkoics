@@ -6,13 +6,15 @@ import json
 import os
 
 class Schedule:
-    def __init__(self, team_name):
-        self.team_name = team_name
-
-    def init_calendar(self):
+    def __init__(self):
         cal = Calendar()
 
-        cal_description = f'Plan zajęć {self.team_name}'
+        config = ConfigParser()
+        config.read('./config.ini')
+
+        team_name = config.get('groups', 'team_name')
+
+        cal_description = f'Plan zajęć {team_name}'
         cal.add('prodid', cal_description)
         cal.add('version', '1.0')
 
